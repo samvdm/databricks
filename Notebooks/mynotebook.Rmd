@@ -1,0 +1,84 @@
+
+---
+title: "mynotebook"
+output:
+  html_document:
+    toc: true
+---
+
+
+```{r}
+%sql
+CREATE DATABASE mydatabase
+```
+
+
+```{r}
+%sql
+SELECT * from mydatabase.tripdata_train
+```
+
+
+```{r}
+%md
+Trips over Time
+```
+
+
+```{r}
+%sql
+SELECT COUNT(ID) trips, year(CAST(Date AS DATE))*100 + month(CAST(Date AS DATE)) yearmonth
+ from mydatabase.tripdata_train
+ GROUP BY yearmonth
+```
+
+
+```{r}
+%md
+Trips per Neighborhood
+```
+
+
+```{r}
+%sql
+SELECT COUNT(ID) trips, neighborhood
+  from mydatabase.tripdata_train
+  GROUP BY neighborhood
+  ORDER BY trips desc limit 10
+```
+
+
+```{r}
+%md
+Trips per hour
+```
+
+
+```{r}
+%sql
+SELECT COUNT(ID) trips, CAST(Hour as int) hourint
+  from mydatabase.tripdata_train
+  GROUP BY hourint
+  ORDER BY hourint
+```
+
+
+```{r}
+%md
+Average fare per hour
+```
+
+
+```{r}
+%sql
+SELECT AVG(fare_amount) trips, CAST(Hour as int) hourint
+  from mydatabase.tripdata_train
+  GROUP BY hourint
+  ORDER BY hourint
+```
+
+
+```{r}
+
+```
+

@@ -1,0 +1,91 @@
+
+---
+title: "sparklyr_tutorial"
+output:
+  html_document:
+    toc: true
+---
+
+
+```{r}
+#library
+library(sparklyr)
+```
+
+
+```{r}
+#establish connection
+sc <- spark_connect(method = "databricks")
+```
+
+
+```{r}
+ls("package:sparklyr", pattern = "^spark_")
+```
+
+
+```{r}
+#get our data
+dat <- spark_read_csv(sc, "FileStore/tables/tripdata_train.csv")
+```
+
+
+```{r}
+dat
+```
+
+
+```{r}
+class(dat)
+```
+
+
+```{r}
+dat <- as.data.frame(dat)
+```
+
+
+```{r}
+str(dat$Date)
+```
+
+
+```{r}
+dat$yearmonth <- cut(dat[,'Date'], breaks="month")
+```
+
+
+```{r}
+dat <- copy_to(sc, dat)
+```
+
+
+```{r}
+class(dat)
+```
+
+
+```{r}
+yearmonth <- dat %>% group_by(yearmonth) %>% summarise(count = n())
+```
+
+
+```{r}
+yearmonth
+```
+
+
+```{r}
+library(ggplot2)
+```
+
+
+```{r}
+options(repr.plot.width = 800, repr.plot.height = 400)
+```
+
+
+```{r}
+ggplot(data = yearmonth, aes(x = as.Date(yearmonth), y = count)) + geom_line(color = "blue") + theme_minimal()
+```
+
